@@ -525,7 +525,8 @@
     </div>
     <div id="cal-no-events" style="display:none" class="state-box">
       <div class="icon">📅</div>
-      <p>No events this month — try another month or switch to List view.</p>
+      <p>No events this month.</p>
+      <p id="cal-no-events-hint" style="margin-top:.4rem;font-size:.85rem"></p>
     </div>
   </div>
 
@@ -619,6 +620,24 @@
     }
 
     document.getElementById('loading-state').style.display = 'none';
+
+    // If the current month has no events, jump to the nearest event's month
+    // (prefer upcoming; fall back to most recent past)
+    if (allEvents.length) {
+      const hasThisMonth = allEvents.some(e =>
+        e._date.getFullYear() === curYear && e._date.getMonth() === curMonth
+      );
+      if (!hasThisMonth) {
+        const now = new Date();
+        const upcoming = allEvents.filter(e => e._date >= now);
+        const target   = upcoming.length
+          ? upcoming[0]
+          : allEvents[allEvents.length - 1];
+        curYear  = target._date.getFullYear();
+        curMonth = target._date.getMonth();
+      }
+    }
+
     render();
   }
 
@@ -685,6 +704,17 @@
       return ed.getFullYear() === curYear && ed.getMonth() === curMonth;
     });
     document.getElementById('cal-no-events').style.display = hasAny ? 'none' : '';
+    if (!hasAny && allEvents.length) {
+      const now     = new Date();
+      const upcoming = allEvents.filter(e => e._date >= now);
+      const nearest  = upcoming.length ? upcoming[0] : allEvents[allEvents.length - 1];
+      const label    = upcoming.length ? 'Next event' : 'Most recent event';
+      const hint     = document.getElementById('cal-no-events-hint');
+      hint.innerHTML =
+        `${label}: <button onclick="curYear=${nearest._date.getFullYear()};curMonth=${nearest._date.getMonth()};render()" ` +
+        `style="background:none;border:none;color:var(--orange);cursor:pointer;font-weight:600;font-size:.85rem;padding:0">` +
+        `${MONTHS[nearest._date.getMonth()]} ${nearest._date.getFullYear()} →</button>`;
+    }
   }
 
   function makeCell(d, isOther, isToday, events) {
@@ -728,8 +758,14 @@
   function renderList() {
     const container = document.getElementById('event-list');
     const now = new Date(); now.setHours(0, 0, 0, 0);
+    const sixMonthsAgo = new Date(now); sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+
     const upcoming = allEvents.filter(e => e._date >= now);
-    const past     = allEvents.filter(e => e._date <  now).slice(-10).reverse();
+    // Show recent past events only within last 6 months, max 5
+    const past = allEvents
+      .filter(e => e._date < now && e._date >= sixMonthsAgo)
+      .slice(-5)
+      .reverse();
 
     if (!upcoming.length && !past.length) {
       container.innerHTML = `
