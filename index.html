@@ -757,56 +757,52 @@
   // ── List view ────────────────────────────────────────────────────────────────
   function renderList() {
     const container = document.getElementById('event-list');
-    const now = new Date(); now.setHours(0, 0, 0, 0);
 
-    const upcoming = allEvents.filter(e => e._date >= now);
-    // Show most recent 10 past events (no time limit)
-    const past = allEvents
-      .filter(e => e._date < now)
-      .slice(-10)
-      .reverse();
+    const monthEvents = allEvents.filter(e =>
+      e._date.getFullYear() === curYear && e._date.getMonth() === curMonth
+    );
 
-    if (!upcoming.length && !past.length) {
+    if (!monthEvents.length) {
+      let hint = '';
+      if (allEvents.length) {
+        const now      = new Date();
+        const upcoming = allEvents.filter(e => e._date >= now);
+        const nearest  = upcoming.length ? upcoming[0] : allEvents[allEvents.length - 1];
+        const label    = upcoming.length ? 'Next event' : 'Most recent event';
+        hint = `<p style="margin-top:.4rem;font-size:.85rem">${label}:
+          <button onclick="curYear=${nearest._date.getFullYear()};curMonth=${nearest._date.getMonth()};render()"
+            style="background:none;border:none;color:var(--orange);cursor:pointer;font-weight:600;font-size:.85rem;padding:0">
+            ${MONTHS[nearest._date.getMonth()]} ${nearest._date.getFullYear()} →
+          </button></p>`;
+      }
       container.innerHTML = `
         <div class="state-box">
-          <div class="icon">🏍</div>
-          <p>No upcoming events scheduled yet.</p>
-          <p style="margin-top:.5rem">
-            Check <a href="https://www.austinridgeriders.com/ride/#sunday-rides" target="_blank" rel="noopener">Sunday Rides</a>
-            or <a href="https://www.austinridgeriders.com/events" target="_blank" rel="noopener">austinridgeriders.com/events</a> directly.
-          </p>
+          <div class="icon">📅</div>
+          <p>No events in ${MONTHS[curMonth]} ${curYear}.</p>
+          ${hint}
         </div>`;
       return;
     }
 
-    if (!upcoming.length) {
-      container.innerHTML = `
-        <div class="state-box" style="background:var(--orange-light);border-color:var(--orange);">
-          <p style="font-weight:600;color:var(--orange);">No upcoming rides scheduled yet</p>
-          <p style="margin-top:.5rem;font-size:.9rem;">
-            Check <a href="https://www.austinridgeriders.com/ride/#sunday-rides" target="_blank" rel="noopener">austinridgeriders.com/ride</a>
-            for the latest Sunday ride schedule. This calendar syncs twice daily.
-          </p>
-        </div>`;
-    }
+    const today   = new Date(); today.setHours(0, 0, 0, 0);
+    const past     = monthEvents.filter(e => e._date < today);
+    const upcoming = monthEvents.filter(e => e._date >= today);
+    const frag     = document.createDocumentFragment();
 
-    const frag = document.createDocumentFragment();
+    past.forEach(ev => {
+      const card = makeCard(ev);
+      card.style.opacity = '0.65';
+      frag.appendChild(card);
+    });
 
-    if (upcoming.length) {
-      upcoming.forEach(ev => frag.appendChild(makeCard(ev)));
-    }
-
-    if (past.length) {
+    if (past.length && upcoming.length) {
       const divider = document.createElement('p');
-      divider.style.cssText = 'font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--text-muted);margin-top:1.5rem;margin-bottom:.5rem;';
-      divider.textContent   = 'Past Events';
+      divider.style.cssText = 'font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--text-muted);margin-top:1rem;margin-bottom:.5rem;';
+      divider.textContent   = 'Upcoming';
       frag.appendChild(divider);
-      past.forEach(ev => {
-        const card = makeCard(ev);
-        card.style.opacity = '0.65';
-        frag.appendChild(card);
-      });
     }
+
+    upcoming.forEach(ev => frag.appendChild(makeCard(ev)));
 
     container.replaceChildren(frag);
   }
