@@ -122,217 +122,138 @@ def to_iso(dt) -> str | None:
     return dt.isoformat() if dt and hasattr(dt, "isoformat") else None
 
 
-# ── Squarespace JSON parser ───────────────────────────────────────────────────
-
-def _parse_squarespace_json(soup) -> list[dict] | None:
-    """
-    Squarespace 7.1 embeds ALL page content as JSON inside <script> tags
-    before client-side rendering. Try to find and parse it.
-    """
-    candidates = soup.find_all("script", type=re.compile(r"application/json", re.I))
-    candidates += soup.find_all("script", id=re.compile(r"sqs|squarespace|page", re.I))
-
-    all_text = ""
-    for tag in candidates:
-        try:
-            data = json.loads(tag.string or "")
-            text = json.dumps(data)  # flatten to string for regex scanning
-            all_text += text + "\n"
-        except Exception:
-            continue
-
-    if not all_text:
-        print("  No Squarespace JSON script tags found")
-        return None
-
-    print(f"  Squarespace JSON: scanning {len(all_text)} chars of embedded JSON")
-
-    # Pull out all text content strings that contain date patterns
-    events: list[dict] = []
-    seen: set[str] = set()
-
-    for dm in _DATE_RE.finditer(all_text):
-        iso = _date_from_match(dm, RIDE_URL)
-        if not iso or iso in seen:
-            continue
-        # Grab surrounding context (up to 200 chars) for time/location
-        start_ctx = max(0, dm.start() - 80)
-        end_ctx   = min(len(all_text), dm.end() + 120)
-        ctx       = all_text[start_ctx:end_ctx]
-        tm        = _TIME_RE.search(ctx)
-        seen.add(iso)
-        events.append({
-            "title":       "Sunday Ride",
-            "start":       iso,
-            "time":        tm.group(0) if tm else "",
-            "description": "",
-            "location":    "",
-            "url":         RIDE_URL + "#sunday-rides",
-        })
-
-    return events if events else None
-
-
 # ── Method 0: /ride/ page — Sunday rides ─────────────────────────────────────
 
 def fetch_ride_page() -> list[dict] | None:
-    """Scrape the /ride/#sunday-rides section for upcoming ride dates."""
+    """Scrape /ride/#sunday-rides using Playwright (JS-rendered page)."""
+    print(f"Trying ride page: {RIDE_URL}#sunday-rides")
+
+    # Primary: Playwright renders the JS so we get real content
+    html = _playwright_fetch(RIDE_URL)
+    if html:
+        events = _parse_ride_html(html)
+        if events:
+            return events
+
+    print("  Playwright returned no events")
+    return None
+
+
+def _playwright_fetch(url: str) -> str | None:
+    try:
+        from playwright.sync_api import sync_playwright
+    except ImportError:
+        print("  Playwright not installed")
+        return None
+
+    print("  Launching headless Chromium...")
+    try:
+        with sync_playwright() as pw:
+            browser = pw.chromium.launch(args=["--no-sandbox", "--disable-dev-shm-usage"])
+            page    = browser.new_page(user_agent=BROWSER_HEADERS["User-Agent"])
+            page.goto(url, wait_until="networkidle", timeout=60_000)
+            page.evaluate("window.scrollTo(0, document.body.scrollHeight)")
+            page.wait_for_timeout(2000)
+            html = page.content()
+            browser.close()
+        print(f"  Playwright: got {len(html)} bytes of rendered HTML")
+        Path("_ride_debug.html").write_text(html[:60000], encoding="utf-8")
+        return html
+    except Exception as exc:
+        print(f"  Playwright failed: {exc}")
+        return None
+
+
+def _parse_ride_html(html: str) -> list[dict] | None:
     try:
         from bs4 import BeautifulSoup
     except ImportError:
         return None
 
-    print(f"Trying ride page: {RIDE_URL}#sunday-rides")
-    try:
-        resp = requests.get(RIDE_URL, headers=BROWSER_HEADERS, timeout=30)
-        resp.raise_for_status()
+    soup = BeautifulSoup(html, "html.parser")
 
-        # Save raw HTML for debugging — committed so we can inspect it
-        Path("_ride_debug.html").write_text(resp.text[:12000], encoding="utf-8")
-        print(f"  Saved {len(resp.text)} bytes of HTML to _ride_debug.html")
+    # Find the sunday-rides section
+    section = soup.find(id=re.compile(r"sunday.?ride", re.I))
+    if not section:
+        for attr in ("data-section-id", "data-anchor-id", "data-anchor"):
+            section = soup.find(attrs={attr: re.compile(r"sunday", re.I)})
+            if section:
+                break
+    if not section:
+        for tag in ("h1", "h2", "h3", "h4"):
+            h = soup.find(tag, string=re.compile(r"sunday", re.I))
+            if h:
+                section = h.find_parent("section") or h.find_parent("div") or h.find_parent("article")
+                break
+    if not section:
+        print("  No sunday-rides section found — scanning full page")
+        section = soup
 
-        soup = BeautifulSoup(resp.text, "html.parser")
+    plain = section.get_text("\n", strip=True)
+    print(f"  Section text preview:\n---\n{plain[:1200]}\n---")
 
-        # ── Strategy 0: Squarespace embedded JSON in <script> tags ───────────
-        # Squarespace 7.1 embeds all page content as JSON before rendering it
-        events = _parse_squarespace_json(soup)
-        if events:
-            print(f"  Squarespace JSON: {len(events)} events")
-            return events
+    events: list[dict] = []
 
-        # ── Find the sunday-rides section ────────────────────────────────────
-        section = None
+    # Table
+    table = section.find("table")
+    if table:
+        rows    = table.find_all("tr")
+        headers = [c.get_text(strip=True).lower() for c in rows[0].find_all(["th","td"])] if rows else []
+        d_col = next((i for i,h in enumerate(headers) if "date" in h), 0)
+        t_col = next((i for i,h in enumerate(headers) if "time" in h), -1)
+        l_col = next((i for i,h in enumerate(headers) if any(k in h for k in ("location","trail","park","where"))), -1)
+        for row in rows[1:]:
+            cells = row.find_all(["td","th"])
+            if not cells:
+                continue
+            dt = cells[d_col].get_text(strip=True) if d_col < len(cells) else ""
+            iso = parse_display_date(dt, RIDE_URL) or (_date_from_match(m, RIDE_URL) if (m := _DATE_RE.search(dt)) else None)
+            if not iso:
+                continue
+            events.append({
+                "title": "Sunday Ride", "start": iso,
+                "time":     cells[t_col].get_text(strip=True) if 0<=t_col<len(cells) else "",
+                "location": cells[l_col].get_text(strip=True) if 0<=l_col<len(cells) else "",
+                "description": "", "url": RIDE_URL + "#sunday-rides",
+            })
 
-        # 1. Direct id attribute (Squarespace sets this from the section anchor)
-        section = soup.find(id=re.compile(r"sunday.?ride", re.I))
-
-        # 2. Squarespace data-section-id / data-anchor-id
-        if not section:
-            for attr in ("data-section-id", "data-anchor-id", "data-anchor"):
-                section = soup.find(attrs={attr: re.compile(r"sunday", re.I)})
-                if section:
-                    break
-
-        # 3. Heading whose text contains "Sunday"
-        if not section:
-            for tag in ("h1", "h2", "h3", "h4"):
-                heading = soup.find(tag, string=re.compile(r"sunday", re.I))
-                if heading:
-                    section = (
-                        heading.find_parent("section")
-                        or heading.find_parent("article")
-                        or heading.find_parent("div")
-                    )
-                    break
-
-        if not section:
-            print("  sunday-rides anchor not found — scanning full page")
-            section = soup
-
-        # ── Dump section text for debugging ─────────────────────────────────
-        raw_text = section.get_text("\n", strip=True)
-        print(f"  Section text preview:\n---\n{raw_text[:1200]}\n---")
-
-        events: list[dict] = []
-
-        # ── Strategy A: HTML table ───────────────────────────────────────────
-        table = section.find("table")
-        if table:
-            print("  Found table — parsing rows")
-            rows = table.find_all("tr")
-            headers: list[str] = []
-            if rows:
-                headers = [c.get_text(strip=True).lower()
-                           for c in rows[0].find_all(["th", "td"])]
-            date_col = next((i for i, h in enumerate(headers) if "date" in h), 0)
-            time_col = next((i for i, h in enumerate(headers) if "time" in h), -1)
-            loc_col  = next((i for i, h in enumerate(headers)
-                             if any(k in h for k in ("location","place","trail","park","where"))), -1)
-
-            for row in rows[1:]:
-                cells = row.find_all(["td", "th"])
-                if not cells:
-                    continue
-                date_text = cells[date_col].get_text(strip=True) if date_col < len(cells) else ""
-                iso = parse_display_date(date_text, RIDE_URL)
-                if not iso:
-                    dm = _DATE_RE.search(date_text)
-                    iso = _date_from_match(dm, RIDE_URL) if dm else None
-                if not iso:
-                    continue
-                time_str = cells[time_col].get_text(strip=True) if 0 <= time_col < len(cells) else ""
-                location = cells[loc_col].get_text(strip=True)  if 0 <= loc_col  < len(cells) else ""
-                events.append({
-                    "title": "Sunday Ride",
-                    "start": iso,
-                    "time": time_str,
-                    "description": "",
-                    "location": location,
-                    "url": RIDE_URL + "#sunday-rides",
-                })
-
-        # ── Strategy B: list items ───────────────────────────────────────────
-        if not events:
-            for li in section.find_all("li"):
-                text = li.get_text(strip=True)
-                dm = _DATE_RE.search(text)
-                if not dm:
-                    continue
-                iso = _date_from_match(dm, RIDE_URL)
-                if not iso:
-                    continue
+    # List items
+    if not events:
+        for li in section.find_all("li"):
+            text = li.get_text(strip=True)
+            m = _DATE_RE.search(text)
+            if not m:
+                continue
+            iso = _date_from_match(m, RIDE_URL)
+            if iso:
                 tm = _TIME_RE.search(text)
-                events.append({
-                    "title": "Sunday Ride",
-                    "start": iso,
-                    "time": tm.group(0) if tm else "",
-                    "description": text,
-                    "location": _extract_location(text),
-                    "url": RIDE_URL + "#sunday-rides",
-                })
+                events.append({"title":"Sunday Ride","start":iso,
+                    "time":tm.group(0) if tm else "","description":text,
+                    "location":_extract_location(text),"url":RIDE_URL+"#sunday-rides"})
 
-        # ── Strategy C: paragraph / line scanning ────────────────────────────
-        if not events:
-            for para in section.find_all(["p", "div"], recursive=False) or [section]:
-                for line in para.get_text("\n", strip=True).splitlines():
-                    line = line.strip()
-                    if not line:
-                        continue
-                    dm = _DATE_RE.search(line)
-                    if not dm:
-                        continue
-                    iso = _date_from_match(dm, RIDE_URL)
-                    if not iso:
-                        continue
-                    tm = _TIME_RE.search(line)
-                    events.append({
-                        "title": "Sunday Ride",
-                        "start": iso,
-                        "time": tm.group(0) if tm else "",
-                        "description": line,
-                        "location": _extract_location(line),
-                        "url": RIDE_URL + "#sunday-rides",
-                    })
+    # Line-by-line scan
+    if not events:
+        for line in plain.splitlines():
+            line = line.strip()
+            m = _DATE_RE.search(line)
+            if not m:
+                continue
+            iso = _date_from_match(m, RIDE_URL)
+            if iso:
+                tm = _TIME_RE.search(line)
+                events.append({"title":"Sunday Ride","start":iso,
+                    "time":tm.group(0) if tm else "","description":line,
+                    "location":_extract_location(line),"url":RIDE_URL+"#sunday-rides"})
 
-        # Deduplicate by date
-        seen: set[str] = set()
-        unique = []
-        for ev in events:
-            if ev["start"] not in seen:
-                seen.add(ev["start"])
-                unique.append(ev)
-
-        print(f"  Ride page: got {len(unique)} events")
-        return unique if unique else None
-
-    except Exception as exc:
-        print(f"  Ride page failed: {exc}")
-        return None
+    # Deduplicate by date
+    seen: set[str] = set()
+    unique = [e for e in events if e["start"] not in seen and not seen.add(e["start"])]  # type: ignore[func-returns-value]
+    print(f"  Ride page: {len(unique)} events")
+    return unique if unique else None
 
 
 def _extract_location(text: str) -> str:
-    """Heuristic: grab text after a dash/pipe/at following the date."""
-    m = re.search(r"(?:[-|@]|at\s+)(.+)$", text, re.IGNORECASE)
+    m = re.search(r"(?:[-–|@]|at\s+)(.+)$", text, re.IGNORECASE)
     return m.group(1).strip() if m else ""
 
 
