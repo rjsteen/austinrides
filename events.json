@@ -1,5 +1,246 @@
 {
-  "updated": null,
+  "updated": "2026-05-31T21:13:55.868380+00:00",
   "source": "https://www.austinridgeriders.com/events",
-  "events": []
+  "events": [
+    {
+      "title": "Cranksgiving Presented by KOM Trails",
+      "start": "Feb7",
+      "time": "9:00\u202fAM4:00\u202fPM",
+      "description": "Cranksgiving is ARR's largest fundraising event of the year and it\u2019s a great way to burn off that extra helping of pumpkin pie while riding with your friends!\u00a0Riders will have an opportunity to complete multiple laps of our marked loop, earning a raffle ticket each time.",
+      "location": "Pace Bend Park(map)",
+      "url": "https://www.austinridgeriders.com/events/cranksgiving"
+    },
+    {
+      "title": "Freehub Presents: A Mountain Bike  Film Festival",
+      "start": "Oct6",
+      "time": "6:00\u202fPM8:30\u202fPM",
+      "description": "Join us at Austin Film Society Cinema\u00a0on Monday, October 6th, at 6PM for a screening event of the 2025 Freehub PRESENTS Mountain Bike Film Festival, benefitting Austin Ridge Riders Mountain Bike Club!",
+      "location": "AFS Cinema(map)",
+      "url": "https://www.austinridgeriders.com/events/freehub-presents"
+    },
+    {
+      "title": "ARR Member Appreciation",
+      "start": "Mar29",
+      "time": "9:00\u202fAM4:00\u202fPM",
+      "description": "Join us for food and fun at our annual Member Appreciation Event!Tickets available March 2025",
+      "location": "Austin Ridge Riders(map)",
+      "url": "https://www.austinridgeriders.com/events/member-appreciation"
+    },
+    {
+      "title": "Cranksgiving Presented by KOM Trails",
+      "start": "Nov30",
+      "time": "9:00\u202fAM5:00\u202fPM",
+      "description": "We're going back to Pace Bend for Cranksgiving 2024 with KOM Trails as presenting sponsor! Tickets on sale October 7th.",
+      "location": "Pace Bend Park(map)",
+      "url": "https://www.austinridgeriders.com/events/cranksgiving-2024"
+    },
+    {
+      "title": "Violet Crown Trail Ribbon Cutting",
+      "start": "Nov9",
+      "time": "9:00\u202fAM11:00\u202fAM",
+      "description": "Join us as we help Hill Country Conservancy celebrate the grand opening of the newest section of the Violet Crown Trail!",
+      "location": "Lacrosse Avenue Trailhead(map)",
+      "url": "https://www.austinridgeriders.com/events/violet-crown-trail-ribbon-cutting"
+    },
+    {
+      "title": "Trail Workday | Walnut Creek",
+      "start": "Nov3",
+      "time": "9:00\u202fAM12:00\u202fPM",
+      "description": "Our first Walnut Creek workday of the Fall season will be on Severe Consequences Loop!",
+      "location": "Austin Ridge Riders(map)",
+      "url": "https://www.austinridgeriders.com/events/workday-20241103"
+    },
+    {
+      "title": "It's My Park Day Fall 2024",
+      "start": "Nov2",
+      "time": "9:00\u202fAM11:00\u202fAM",
+      "description": "Join ARR as we help Hill Country Conservancy build Brush Barriers along the Violet Crown Trail.",
+      "location": "Lacrosse Trailhead(map)",
+      "url": "https://www.austinridgeriders.com/events/impd-fall-2024"
+    },
+    {
+      "title": "Monthly Ride | Cameron Park",
+      "start": "Oct26",
+      "time": "9:30\u202fAM11:30\u202fAM",
+      "description": "Let's take a field trip to Cameron Park in Waco; an extensive trail network with shade and a bit of elevation, right on the Brazos River. Thank you to Ride Cameron Park for helping with ride leaders!",
+      "location": "Northern Gateway Park(map)",
+      "url": "https://www.austinridgeriders.com/events/october-2024-cameron-park"
+    },
+    {
+      "title": "Advanced / Intermediate Level Ride",
+      "start": "Oct12",
+      "time": "8:00\u202fAM12:00\u202fPM",
+      "description": "This is a great way to test your skills at more technical locations than we typically visit. This ride is not for beginners!",
+      "location": "Emma Long Metro Park(map)",
+      "url": "https://www.austinridgeriders.com/events/emma-long-10-12"
+    },
+    {
+      "title": "Monthly Ride | Reveille Peak Ranch",
+      "start": "Sep28",
+      "time": "9:00\u202fAM11:00\u202fAM",
+      "description": "Reveille Peak Ranch in Burnet is a favorite. Boasting a unique and beautiful granitic landscape, sprawling views, and excellent trails that will challenge all levels of rider.",
+      "location": "Reveille Peak Ranch(map)",
+      "url": "https://www.austinridgeriders.com/events/september-2024-reveille-peak"
+    },
+    {
+      "title": "ARR Fundamentals Ride Clinic",
+      "start": "Sep21",
+      "time": "8:00\u202fAM2:00\u202fPM",
+      "description": "Riders have been asking and Austin Ridge Riders is offering; this will be our first Fundamentals Ride Clinic exclusively for ARR Members!",
+      "location": "Walnut Creek Metro Park(map)",
+      "url": "https://www.austinridgeriders.com/events/clinic-9-21-24"
+    },
+    {
+      "title": "Intermediate & Advanced Level Ride | Mt. Lakeway",
+      "start": "Sep14",
+      "time": "8:00\u202fAM12:00\u202fPM",
+      "description": "This ride is not for beginners! Expect lots of elevation, switchbacks, technical climbing and flowy descents.",
+      "location": "Mount Lakeway Trails(map)",
+      "url": "https://www.austinridgeriders.com/events/lakeway-9-14"
+    },
+    {
+      "title": "Movie Night | Anytime Presented by Shimano",
+      "start": "Sep5",
+      "time": "6:00\u202fPM8:45\u202fPM",
+      "description": "Anytime follows the collective ambitions of fifteen of the world\u2019s best male and female freeride mountain bikers across forests, deserts, cities and high-alpine peaks, as they attempt to define the frontiers of their sport.",
+      "location": "Austin Film Society Cinema(map)",
+      "url": "https://www.austinridgeriders.com/events/anytime-presented-by-shimano"
+    },
+    {
+      "title": "Monthly Ride | Muleshoe Bend",
+      "start": "Aug31",
+      "time": "8:00\u202fAM11:00\u202fAM",
+      "description": "Muleshoe Bend is an LCRA park on Lake Travis which offers riders a less technically demanding venue under nice shady trees. Camping is available, so be sure to check the website for details and to reserve your spot.",
+      "location": "Muleshoe Bend Recreation Area(map)",
+      "url": "https://www.austinridgeriders.com/events/august-2024-muleshoe"
+    },
+    {
+      "title": "Monthly Ride | Rocky Hill Ranch",
+      "start": "Jul27",
+      "time": "8:00\u202fAM11:00\u202fAM",
+      "description": "Rocky Hill Ranch in Smithville opened in 1993 as one of the first MTB ranches in the state. The tall pine trees provide shade and make this a beautiful place to ride. There is a covered pavilion so we can avoid the sun during the post ride lunch.",
+      "location": "Rocky Hill Ranch(map)",
+      "url": "https://www.austinridgeriders.com/events/july-2024-rocky-hill"
+    },
+    {
+      "title": "Monthly Ride | Pace Bend Park",
+      "start": "Jun29",
+      "time": "8:00\u202fAM11:00\u202fAM",
+      "description": "Pace Bend is a Travis County park located on the shores on Lake Travis near Briarcliff. The terrain is mostly technical yet approachable for most riders and while there is significant elevation, it is not extreme relative to Mount Lakeway as an example.",
+      "location": "Pace Bend Trailhead(map)",
+      "url": "https://www.austinridgeriders.com/events/june-2024-pacebend"
+    },
+    {
+      "title": "International Women\u2019s Mountain Biking Day",
+      "start": "May4",
+      "time": "9:00\u202fAM1:00\u202fPM",
+      "description": "A long time ago, in mountain, forest and field far, far away... pioneering women picked up their balloon tired clunker bikes to ride and explore.As we enter our 30th year of Ride Like a Girl with the Austin Ridge Riders, we invite women of our mountain biking community to come together this International Women's Mountain Biking Day for a social group ride at Pace Bend Park.",
+      "location": "Pace Bend Park(map)",
+      "url": "https://www.austinridgeriders.com/events/womensday2024"
+    },
+    {
+      "title": "Annual Ride Leader / Sweep Review",
+      "start": "Apr20",
+      "time": "11:00\u202fAM12:30\u202fPM",
+      "description": "Join The Austin Mountain Bikers Meetup Group for Annual Ride Leader / Sweep Protocol Review. All ride levels.",
+      "location": "Walnut Creek Metro Park(map)",
+      "url": "https://www.austinridgeriders.com/events/ride-leader-review-2024"
+    },
+    {
+      "title": "Five Finger Discount",
+      "start": "Apr14",
+      "time": "1:00\u202fPM9:00\u202fPM",
+      "description": "Five Finger Discount is back! Best Side Trails is stoked to welcome the community to a wild and inclusive event for everyone of all skill levels with BMX competitions, CX racing, live DJ, food and drinks under a beautiful Spring canopy.",
+      "location": "Best Side Trails(map)",
+      "url": "https://www.austinridgeriders.com/events/five-finger-discount-2024"
+    },
+    {
+      "title": "Grip Hoist Training | Walnut Creek",
+      "start": "Apr5",
+      "time": "1:30\u202fPM3:30\u202fPM",
+      "description": "Learn how to use Grip Hoist - a heavy duty manual mechanical system for pulling large objects like boulders across the ground.",
+      "location": "Walnut Creek Metro Park(map)",
+      "url": "https://www.austinridgeriders.com/events/griphoist-4-5-24"
+    },
+    {
+      "title": "Monthly Ride | Cameron Park",
+      "start": "Mar23",
+      "time": "9:00\u202fAM12:00\u202fPM",
+      "description": "For March we are visiting Cameron Park in Waco! Please RSVP as lunch is provided.",
+      "location": "Cameron Park Northern gateway(map)",
+      "url": "https://www.austinridgeriders.com/events/monthlyride-march2024"
+    },
+    {
+      "title": "ARR Trail Crew | Brushy Creek",
+      "start": "Mar10",
+      "time": "9:00\u202fAM12:00\u202fPM",
+      "description": "Join Brushy Creek steward Tommy Kerstetter this Sunday as we move brush so that the county can chip it. Eye protection is encouraged!",
+      "location": "Brushy Creek Trailhead near Rutledge Elmentary(map)",
+      "url": "https://www.austinridgeriders.com/events/trailcrew-brushy-2024-03-10"
+    },
+    {
+      "title": "ARR and FR512 Present: Party in The Pines",
+      "start": "Mar9",
+      "time": "10:00\u202fAM4:00\u202fPM",
+      "description": "Austin Ridge Riders is stoked to partner with Freeride 512 for an exciting day of progression offered exclusively to members of either organization.",
+      "location": "Freeride 512 at Rocky Hill Ranch(map)",
+      "url": "https://www.austinridgeriders.com/events/party-in-the-pines-24"
+    },
+    {
+      "title": "ARR Trail Crew at Walnut Creek",
+      "start": "Mar2",
+      "time": "9:00\u202fAM12:00\u202fPM",
+      "description": "More dirt work on Windy Loop, and also moving some logs! There is also some optional tree work with Cliff Tyllick\u2019s group \"Keep Walnut Creek Wild\".",
+      "location": "Walnut Creek Metro Park(map)",
+      "url": "https://www.austinridgeriders.com/events/trailcrew-2024-03-02"
+    },
+    {
+      "title": "ARR Monthly Ride: Dana Peak",
+      "start": "Feb24",
+      "time": "9:00\u202fAM12:00\u202fPM",
+      "description": "Austin Ridge Riders monthly group rides are no- drop rides that cater to riders of all levels, beginner to advanced. Announcements will be made, then we will divide into riding groups according to skill levels.",
+      "location": "Dana Peak Park(map)",
+      "url": "https://www.austinridgeriders.com/events/monthlyride-feb2024"
+    },
+    {
+      "title": "ARR Trail Crew | Brushy Creek",
+      "start": "Feb18",
+      "time": "9:00\u202fAM12:00\u202fPM",
+      "description": "It's time to finish \"The Meg!\" Join ARR Trail Steward Ronan O'Connor for a workday at Brushy Creek to complete a new connector trail that will allow a full 10-mile loop of the parks' singletrack without needing to use the concrete path.",
+      "location": "Brushy Creek Trailhead near Rutledge Elmentary(map)",
+      "url": "https://www.austinridgeriders.com/events/trailcrew-brushy-2024-02-18"
+    },
+    {
+      "title": "Re-Scheduled! ARR Group Ride - South Austin Trail Network",
+      "start": "Feb4",
+      "time": "9:00\u202fAM10:00\u202fAM",
+      "description": "Our first alternate Sunday ride of 2024 will be South Austin Trail Network! We\u2019ve recruited some regulars who know the trails to lead each group!",
+      "location": "South Austin Trail Network(map)",
+      "url": "https://www.austinridgeriders.com/events/arr-altsunday-2023-01-07"
+    },
+    {
+      "title": "ARR Trail Crew at Walnut Creek",
+      "start": "Jan27",
+      "time": "9:00\u202fAM12:00\u202fPM",
+      "description": "With the current rain clearing up by tomorrow (supposedly), this weekend ought to have nice damp dirt, perfect for moving, shaping and packing!",
+      "location": "Walnut Creek Metro Park(map)",
+      "url": "https://www.austinridgeriders.com/events/tc-workday-1-27-24"
+    },
+    {
+      "title": "Cancelled: ARR Monthly Ride: Dana Peak",
+      "start": "Jan20",
+      "time": "9:00\u202fAM12:00\u202fPM",
+      "description": "RSVP by Jan 18th! Awesome trails and stunning views! Our January monthly ride takes us to Dana Peak near Waco.",
+      "location": "Dana Peak Park(map)",
+      "url": "https://www.austinridgeriders.com/events/monthlyride-jan2024"
+    },
+    {
+      "title": "ARR Trail Crew at Walnut Creek",
+      "start": "Jan10",
+      "time": "11:30\u202fAM1:30\u202fPM",
+      "description": "ARR Trail Crew members will be repairing the \u201cRock Bridge\u201d en route to Point 6 trail.",
+      "location": "Walnut Creek Metro Park(map)",
+      "url": "https://www.austinridgeriders.com/events/arr-trail-crew-at-walnut-creek"
+    }
+  ]
 }
