@@ -149,15 +149,40 @@ def _playwright_fetch(url: str) -> str | None:
     print("  Launching headless Chromium...")
     try:
         with sync_playwright() as pw:
-            browser = pw.chromium.launch(args=["--no-sandbox", "--disable-dev-shm-usage"])
-            page    = browser.new_page(user_agent=BROWSER_HEADERS["User-Agent"])
-            page.goto(url, wait_until="networkidle", timeout=60_000)
+            browser = pw.chromium.launch(args=[
+                "--no-sandbox",
+                "--disable-dev-shm-usage",
+                "--disable-blink-features=AutomationControlled",
+            ])
+            ctx  = browser.new_context(
+                user_agent=BROWSER_HEADERS["User-Agent"],
+                viewport={"width": 1280, "height": 900},
+            )
+            page = ctx.new_page()
+
+            # Load initial HTML
+            page.goto(url, wait_until="domcontentloaded", timeout=60_000)
+
+            # Wait for network to finish (Squarespace makes many API calls)
+            try:
+                page.wait_for_load_state("networkidle", timeout=30_000)
+            except Exception:
+                pass  # timeout OK — grab whatever rendered so far
+
+            # Extra time for Squarespace template engine to inject content
+            page.wait_for_timeout(5_000)
+
+            # Scroll to trigger any lazy-loaded sections
             page.evaluate("window.scrollTo(0, document.body.scrollHeight)")
-            page.wait_for_timeout(2000)
+            page.wait_for_timeout(3_000)
+            page.evaluate("window.scrollTo(0, 0)")
+            page.wait_for_timeout(1_000)
+
             html = page.content()
             browser.close()
+
         print(f"  Playwright: got {len(html)} bytes of rendered HTML")
-        Path("_ride_debug.html").write_text(html[:60000], encoding="utf-8")
+        Path("_ride_debug.html").write_text(html[:200_000], encoding="utf-8")
         return html
     except Exception as exc:
         print(f"  Playwright failed: {exc}")
@@ -190,7 +215,7 @@ def _parse_ride_html(html: str) -> list[dict] | None:
         section = soup
 
     plain = section.get_text("\n", strip=True)
-    print(f"  Section text preview:\n---\n{plain[:1200]}\n---")
+    print(f"  Section text preview:\n---\n{plain[:4000]}\n---")
 
     events: list[dict] = []
 

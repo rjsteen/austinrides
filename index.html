@@ -758,25 +758,36 @@
   function renderList() {
     const container = document.getElementById('event-list');
     const now = new Date(); now.setHours(0, 0, 0, 0);
-    const sixMonthsAgo = new Date(now); sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
 
     const upcoming = allEvents.filter(e => e._date >= now);
-    // Show recent past events only within last 6 months, max 5
+    // Show most recent 10 past events (no time limit)
     const past = allEvents
-      .filter(e => e._date < now && e._date >= sixMonthsAgo)
-      .slice(-5)
+      .filter(e => e._date < now)
+      .slice(-10)
       .reverse();
 
     if (!upcoming.length && !past.length) {
       container.innerHTML = `
         <div class="state-box">
           <div class="icon">🏍</div>
-          <p>No events loaded yet.</p>
+          <p>No upcoming events scheduled yet.</p>
           <p style="margin-top:.5rem">
-            Check <a href="https://www.austinridgeriders.com/events" target="_blank" rel="noopener">austinridgeriders.com/events</a> directly.
+            Check <a href="https://www.austinridgeriders.com/ride/#sunday-rides" target="_blank" rel="noopener">Sunday Rides</a>
+            or <a href="https://www.austinridgeriders.com/events" target="_blank" rel="noopener">austinridgeriders.com/events</a> directly.
           </p>
         </div>`;
       return;
+    }
+
+    if (!upcoming.length) {
+      container.innerHTML = `
+        <div class="state-box" style="background:var(--orange-light);border-color:var(--orange);">
+          <p style="font-weight:600;color:var(--orange);">No upcoming rides scheduled yet</p>
+          <p style="margin-top:.5rem;font-size:.9rem;">
+            Check <a href="https://www.austinridgeriders.com/ride/#sunday-rides" target="_blank" rel="noopener">austinridgeriders.com/ride</a>
+            for the latest Sunday ride schedule. This calendar syncs twice daily.
+          </p>
+        </div>`;
     }
 
     const frag = document.createDocumentFragment();
@@ -788,7 +799,7 @@
     if (past.length) {
       const divider = document.createElement('p');
       divider.style.cssText = 'font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--text-muted);margin-top:1.5rem;margin-bottom:.5rem;';
-      divider.textContent   = upcoming.length ? 'Past Events' : 'Recent Events';
+      divider.textContent   = 'Past Events';
       frag.appendChild(divider);
       past.forEach(ev => {
         const card = makeCard(ev);
