@@ -561,6 +561,7 @@
   let allEvents   = [];
   let curYear, curMonth;
   let activeView  = 'calendar';
+  let todayOnly   = false;
 
   // ── Date helpers ────────────────────────────────────────────────────────────
   function parseDate(str) {
@@ -651,8 +652,11 @@
 
   // ── Render dispatcher ────────────────────────────────────────────────────────
   function render() {
+    const now = new Date();
     document.getElementById('month-label').textContent =
-      `${MONTHS[curMonth]} ${curYear}`;
+      (todayOnly && activeView === 'list')
+        ? `Today — ${MONTHS[now.getMonth()]} ${now.getDate()}`
+        : `${MONTHS[curMonth]} ${curYear}`;
     document.getElementById('calendar-view').style.display = activeView === 'calendar' ? '' : 'none';
     document.getElementById('list-view').style.display     = activeView === 'list'     ? '' : 'none';
     if (activeView === 'calendar') renderCalendar();
@@ -758,9 +762,12 @@
   function renderList() {
     const container = document.getElementById('event-list');
 
-    const monthEvents = allEvents.filter(e =>
-      e._date.getFullYear() === curYear && e._date.getMonth() === curMonth
-    );
+    const today = new Date(); today.setHours(0, 0, 0, 0);
+    const monthEvents = todayOnly
+      ? allEvents.filter(e => e._date.getTime() === today.getTime())
+      : allEvents.filter(e =>
+          e._date.getFullYear() === curYear && e._date.getMonth() === curMonth
+        );
 
     if (!monthEvents.length) {
       let hint = '';
@@ -784,7 +791,6 @@
       return;
     }
 
-    const today   = new Date(); today.setHours(0, 0, 0, 0);
     const past     = monthEvents.filter(e => e._date < today);
     const upcoming = monthEvents.filter(e => e._date >= today);
     const frag     = document.createDocumentFragment();
@@ -868,6 +874,7 @@
   // ── View switching ────────────────────────────────────────────────────────────
   function setView(v) {
     activeView = v;
+    if (v === 'calendar') todayOnly = false;
     document.getElementById('btn-calendar').className = 'view-btn' + (v === 'calendar' ? ' active' : '');
     document.getElementById('btn-list').className     = 'view-btn' + (v === 'list'     ? ' active' : '');
     render();
@@ -875,17 +882,20 @@
 
   // ── Event listeners ───────────────────────────────────────────────────────────
   document.getElementById('prev-month').onclick = () => {
+    todayOnly = false;
     if (curMonth === 0) { curMonth = 11; curYear--; } else curMonth--;
     render();
   };
   document.getElementById('next-month').onclick = () => {
+    todayOnly = false;
     if (curMonth === 11) { curMonth = 0; curYear++; } else curMonth++;
     render();
   };
   document.getElementById('today-btn').onclick = () => {
     const now = new Date();
-    curYear  = now.getFullYear();
-    curMonth = now.getMonth();
+    curYear   = now.getFullYear();
+    curMonth  = now.getMonth();
+    todayOnly = activeView === 'list';
     render();
   };
   document.getElementById('btn-calendar').onclick = () => setView('calendar');
