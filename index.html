@@ -122,6 +122,11 @@
     .today-btn:hover {
       background: var(--bg);
     }
+    .today-btn.active {
+      background: var(--navy);
+      color: var(--white);
+      border-color: var(--navy);
+    }
     .view-toggle {
       display: flex;
       border: 1px solid var(--border);
@@ -653,10 +658,18 @@
   // ── Render dispatcher ────────────────────────────────────────────────────────
   function render() {
     const now = new Date();
+    const showingToday = todayOnly && activeView === 'list';
     document.getElementById('month-label').textContent =
-      (todayOnly && activeView === 'list')
+      showingToday
         ? `Today — ${MONTHS[now.getMonth()]} ${now.getDate()}`
         : `${MONTHS[curMonth]} ${curYear}`;
+    document.getElementById('today-btn').className =
+      'today-btn' + (showingToday ? ' active' : '');
+    const atMinMonth = curYear === now.getFullYear() && curMonth <= now.getMonth();
+    const prevBtn = document.getElementById('prev-month');
+    prevBtn.disabled = atMinMonth;
+    prevBtn.style.opacity = atMinMonth ? '0.3' : '';
+    prevBtn.style.cursor  = atMinMonth ? 'default' : '';
     document.getElementById('calendar-view').style.display = activeView === 'calendar' ? '' : 'none';
     document.getElementById('list-view').style.display     = activeView === 'list'     ? '' : 'none';
     if (activeView === 'calendar') renderCalendar();
@@ -882,6 +895,8 @@
 
   // ── Event listeners ───────────────────────────────────────────────────────────
   document.getElementById('prev-month').onclick = () => {
+    const now = new Date();
+    if (curYear === now.getFullYear() && curMonth <= now.getMonth()) return;
     todayOnly = false;
     if (curMonth === 0) { curMonth = 11; curYear--; } else curMonth--;
     render();
@@ -895,8 +910,8 @@
     const now = new Date();
     curYear   = now.getFullYear();
     curMonth  = now.getMonth();
-    todayOnly = activeView === 'list';
-    render();
+    todayOnly = true;
+    setView('list');
   };
   document.getElementById('btn-calendar').onclick = () => setView('calendar');
   document.getElementById('btn-list').onclick     = () => setView('list');
