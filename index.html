@@ -503,8 +503,14 @@
 </div>
 
 <div class="main">
+  <!-- Loading state -->
+  <div id="loading-state" class="state-box">
+    <div class="icon">⏳</div>
+    <p>Loading events…</p>
+  </div>
+
   <!-- Calendar view -->
-  <div id="calendar-view">
+  <div id="calendar-view" style="display:none">
     <div class="calendar-wrap">
       <div class="cal-header">
         <div class="cal-header-day">Sun</div>
@@ -516,6 +522,10 @@
         <div class="cal-header-day">Sat</div>
       </div>
       <div class="cal-grid" id="cal-grid"></div>
+    </div>
+    <div id="cal-no-events" style="display:none" class="state-box">
+      <div class="icon">📅</div>
+      <p>No events this month — try another month or switch to List view.</p>
     </div>
   </div>
 
@@ -598,12 +608,17 @@
         const d = new Date(data.updated);
         document.getElementById('footer-note').textContent =
           'Last synced: ' + d.toLocaleString();
+      } else {
+        document.getElementById('footer-note').innerHTML =
+          'Events not yet synced — <a href="https://www.austinridgeriders.com/events" target="_blank">view source site</a>';
       }
     } catch (err) {
       console.warn('Could not load events.json:', err);
       document.getElementById('footer-note').innerHTML =
-        'Could not load events. Check <a href="https://www.austinridgeriders.com/events" target="_blank">austinridgeriders.com/events</a>.';
+        'Could not load events — <a href="https://www.austinridgeriders.com/events" target="_blank">view source site</a>';
     }
+
+    document.getElementById('loading-state').style.display = 'none';
     render();
   }
 
@@ -619,6 +634,8 @@
   function render() {
     document.getElementById('month-label').textContent =
       `${MONTHS[curMonth]} ${curYear}`;
+    document.getElementById('calendar-view').style.display = activeView === 'calendar' ? '' : 'none';
+    document.getElementById('list-view').style.display     = activeView === 'list'     ? '' : 'none';
     if (activeView === 'calendar') renderCalendar();
     else renderList();
   }
@@ -661,6 +678,13 @@
     }
 
     grid.replaceChildren(frag);
+
+    // Show a hint when the whole month has no events
+    const hasAny = allEvents.some(e => {
+      const ed = e._date;
+      return ed.getFullYear() === curYear && ed.getMonth() === curMonth;
+    });
+    document.getElementById('cal-no-events').style.display = hasAny ? 'none' : '';
   }
 
   function makeCell(d, isOther, isToday, events) {
@@ -784,8 +808,6 @@
   // ── View switching ────────────────────────────────────────────────────────────
   function setView(v) {
     activeView = v;
-    document.getElementById('calendar-view').style.display = v === 'calendar' ? '' : 'none';
-    document.getElementById('list-view').style.display     = v === 'list'     ? '' : 'none';
     document.getElementById('btn-calendar').className = 'view-btn' + (v === 'calendar' ? ' active' : '');
     document.getElementById('btn-list').className     = 'view-btn' + (v === 'list'     ? ' active' : '');
     render();
