@@ -122,6 +122,57 @@ def to_iso(dt) -> str | None:
     return dt.isoformat() if dt and hasattr(dt, "isoformat") else None
 
 
+# ── Squarespace JSON parser ───────────────────────────────────────────────────
+
+def _parse_squarespace_json(soup) -> list[dict] | None:
+    """
+    Squarespace 7.1 embeds ALL page content as JSON inside <script> tags
+    before client-side rendering. Try to find and parse it.
+    """
+    candidates = soup.find_all("script", type=re.compile(r"application/json", re.I))
+    candidates += soup.find_all("script", id=re.compile(r"sqs|squarespace|page", re.I))
+
+    all_text = ""
+    for tag in candidates:
+        try:
+            data = json.loads(tag.string or "")
+            text = json.dumps(data)  # flatten to string for regex scanning
+            all_text += text + "\n"
+        except Exception:
+            continue
+
+    if not all_text:
+        print("  No Squarespace JSON script tags found")
+        return None
+
+    print(f"  Squarespace JSON: scanning {len(all_text)} chars of embedded JSON")
+
+    # Pull out all text content strings that contain date patterns
+    events: list[dict] = []
+    seen: set[str] = set()
+
+    for dm in _DATE_RE.finditer(all_text):
+        iso = _date_from_match(dm, RIDE_URL)
+        if not iso or iso in seen:
+            continue
+        # Grab surrounding context (up to 200 chars) for time/location
+        start_ctx = max(0, dm.start() - 80)
+        end_ctx   = min(len(all_text), dm.end() + 120)
+        ctx       = all_text[start_ctx:end_ctx]
+        tm        = _TIME_RE.search(ctx)
+        seen.add(iso)
+        events.append({
+            "title":       "Sunday Ride",
+            "start":       iso,
+            "time":        tm.group(0) if tm else "",
+            "description": "",
+            "location":    "",
+            "url":         RIDE_URL + "#sunday-rides",
+        })
+
+    return events if events else None
+
+
 # ── Method 0: /ride/ page — Sunday rides ─────────────────────────────────────
 
 def fetch_ride_page() -> list[dict] | None:
@@ -136,12 +187,23 @@ def fetch_ride_page() -> list[dict] | None:
         resp = requests.get(RIDE_URL, headers=BROWSER_HEADERS, timeout=30)
         resp.raise_for_status()
 
+        # Save raw HTML for debugging — committed so we can inspect it
+        Path("_ride_debug.html").write_text(resp.text[:12000], encoding="utf-8")
+        print(f"  Saved {len(resp.text)} bytes of HTML to _ride_debug.html")
+
         soup = BeautifulSoup(resp.text, "html.parser")
+
+        # ── Strategy 0: Squarespace embedded JSON in <script> tags ───────────
+        # Squarespace 7.1 embeds all page content as JSON before rendering it
+        events = _parse_squarespace_json(soup)
+        if events:
+            print(f"  Squarespace JSON: {len(events)} events")
+            return events
 
         # ── Find the sunday-rides section ────────────────────────────────────
         section = None
 
-        # 1. Direct id attribute
+        # 1. Direct id attribute (Squarespace sets this from the section anchor)
         section = soup.find(id=re.compile(r"sunday.?ride", re.I))
 
         # 2. Squarespace data-section-id / data-anchor-id
@@ -156,7 +218,6 @@ def fetch_ride_page() -> list[dict] | None:
             for tag in ("h1", "h2", "h3", "h4"):
                 heading = soup.find(tag, string=re.compile(r"sunday", re.I))
                 if heading:
-                    # Use the next sibling block or parent section
                     section = (
                         heading.find_parent("section")
                         or heading.find_parent("article")
@@ -170,7 +231,7 @@ def fetch_ride_page() -> list[dict] | None:
 
         # ── Dump section text for debugging ─────────────────────────────────
         raw_text = section.get_text("\n", strip=True)
-        print(f"  Section text preview:\n---\n{raw_text[:800]}\n---")
+        print(f"  Section text preview:\n---\n{raw_text[:1200]}\n---")
 
         events: list[dict] = []
 

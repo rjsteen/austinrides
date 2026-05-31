@@ -52,12 +52,13 @@ jobs:
       # Commit updated events.json back to main so the data persists between
       # runs and is available if GitHub Pages is served from the branch directly.
       # [skip ci] prevents this commit from re-triggering the workflow.
-      - name: Commit events.json to main
+      - name: Commit events.json and debug files to main
         if: steps.fetch.outcome == 'success'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add events.json
+          git add _ride_debug.html 2>/dev/null || true
           git diff --staged --quiet || git commit -m "chore: sync events data [skip ci]"
           git push
 
