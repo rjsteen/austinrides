@@ -1,0 +1,71 @@
+name: Fetch Events & Deploy
+
+on:
+  # Run twice a day to keep the calendar fresh
+  schedule:
+    - cron: '0 8,20 * * *'   # 08:00 and 20:00 UTC daily
+
+  # Re-deploy on every push to main (picks up site changes)
+  push:
+    branches: [main]
+
+  # Allow manual trigger from the Actions tab
+  workflow_dispatch:
+
+# Required for GitHub Pages deployment
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Only one deploy at a time; don't cancel in-progress runs
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: scripts/requirements.txt
+
+      - name: Install Python dependencies
+        run: pip install -r scripts/requirements.txt
+
+      - name: Fetch events from austinridgeriders.com
+        # continue-on-error so we still deploy with cached data if the fetch fails
+        continue-on-error: true
+        run: python scripts/fetch_events.py
+
+      - name: Prepare site directory
+        run: |
+          mkdir -p _site
+          cp index.html _site/
+          cp events.json _site/
+          # Prevent GitHub Pages from running Jekyll
+          touch _site/.nojekyll
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+      - name: Deploy to GitHub Pages
+        id: deploy
+        uses: actions/deploy-pages@v4
