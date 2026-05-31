@@ -729,12 +729,13 @@
     const container = document.getElementById('event-list');
     const now = new Date(); now.setHours(0, 0, 0, 0);
     const upcoming = allEvents.filter(e => e._date >= now);
+    const past     = allEvents.filter(e => e._date <  now).slice(-10).reverse();
 
-    if (!upcoming.length) {
+    if (!upcoming.length && !past.length) {
       container.innerHTML = `
         <div class="state-box">
           <div class="icon">🏍</div>
-          <p>No upcoming events found.</p>
+          <p>No events loaded yet.</p>
           <p style="margin-top:.5rem">
             Check <a href="https://www.austinridgeriders.com/events" target="_blank" rel="noopener">austinridgeriders.com/events</a> directly.
           </p>
@@ -743,7 +744,23 @@
     }
 
     const frag = document.createDocumentFragment();
-    upcoming.forEach(ev => frag.appendChild(makeCard(ev)));
+
+    if (upcoming.length) {
+      upcoming.forEach(ev => frag.appendChild(makeCard(ev)));
+    }
+
+    if (past.length) {
+      const divider = document.createElement('p');
+      divider.style.cssText = 'font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--text-muted);margin-top:1.5rem;margin-bottom:.5rem;';
+      divider.textContent   = upcoming.length ? 'Past Events' : 'Recent Events';
+      frag.appendChild(divider);
+      past.forEach(ev => {
+        const card = makeCard(ev);
+        card.style.opacity = '0.65';
+        frag.appendChild(card);
+      });
+    }
+
     container.replaceChildren(frag);
   }
 
