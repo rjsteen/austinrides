@@ -70,6 +70,7 @@ jobs:
           mkdir -p _site
           cp index.html _site/
           cp events.json _site/
+          cp favicon.svg _site/
           touch _site/.nojekyll
 
       - name: Setup Pages
