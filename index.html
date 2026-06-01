@@ -665,7 +665,7 @@
   let curYear, curMonth;
   let activeView     = 'calendar';
   let todayOnly      = false;
-  let activeCategory = null; // null = All
+  let activeCategories = new Set(); // empty = All
 
   // ── Date helpers ────────────────────────────────────────────────────────────
   function parseDate(str) {
@@ -901,29 +901,35 @@
       const frag = document.createDocumentFragment();
 
       // "All" chip
+      const noneSelected = activeCategories.size === 0;
       const allBtn = document.createElement('button');
-      allBtn.className   = 'cat-btn' + (activeCategory === null ? ' active' : '');
+      allBtn.className = 'cat-btn' + (noneSelected ? ' active' : '');
       allBtn.textContent = 'All';
-      allBtn.style.color = activeCategory === null ? 'var(--navy)' : 'var(--text-muted)';
       allBtn.style.borderColor = 'var(--text-muted)';
-      if (activeCategory === null) {
-        allBtn.style.background = 'var(--navy)';
-        allBtn.style.color      = 'var(--white)';
+      if (noneSelected) {
+        allBtn.style.background  = 'var(--navy)';
+        allBtn.style.color       = 'var(--white)';
         allBtn.style.borderColor = 'var(--navy)';
+      } else {
+        allBtn.style.color = 'var(--text-muted)';
       }
-      allBtn.onclick = () => { activeCategory = null; renderList(); };
+      allBtn.onclick = () => { activeCategories.clear(); renderList(); };
       frag.appendChild(allBtn);
 
       // One chip per present category
       for (const cat of monthCats) {
         const btn = document.createElement('button');
-        const isActive = activeCategory === cat.initial;
+        const isActive = activeCategories.has(cat.initial);
         btn.className    = 'cat-btn' + (isActive ? ' active' : '');
         btn.style.color  = isActive ? '' : cat.color;
         btn.style.borderColor = cat.color;
         if (isActive) btn.style.background = cat.color;
         btn.textContent  = CATEGORY_LABELS[cat.initial] ?? cat.initial;
-        btn.onclick = () => { activeCategory = activeCategory === cat.initial ? null : cat.initial; renderList(); };
+        btn.onclick = () => {
+          if (activeCategories.has(cat.initial)) activeCategories.delete(cat.initial);
+          else activeCategories.add(cat.initial);
+          renderList();
+        };
         frag.appendChild(btn);
       }
       filtersEl.style.display = '';
@@ -933,8 +939,8 @@
     }
 
     // Apply category filter
-    const visible = activeCategory
-      ? monthEvents.filter(e => getCategory(e.title).initial === activeCategory)
+    const visible = activeCategories.size
+      ? monthEvents.filter(e => activeCategories.has(getCategory(e.title).initial))
       : monthEvents;
 
     if (!visible.length) {
@@ -1067,7 +1073,7 @@
     curYear        = now.getFullYear();
     curMonth       = now.getMonth();
     todayOnly      = true;
-    activeCategory = null;
+    activeCategories.clear();
     setView('list');
   };
   document.getElementById('btn-calendar').onclick = () => setView('calendar');
