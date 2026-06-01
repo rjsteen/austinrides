@@ -923,7 +923,7 @@
         btn.style.borderColor = cat.color;
         if (isActive) btn.style.background = cat.color;
         btn.textContent  = CATEGORY_LABELS[cat.initial] ?? cat.initial;
-        btn.onclick = () => { activeCategory = cat.initial; renderList(); };
+        btn.onclick = () => { activeCategory = activeCategory === cat.initial ? null : cat.initial; renderList(); };
         frag.appendChild(btn);
       }
       filtersEl.style.display = '';
