@@ -17,6 +17,13 @@
       --bg: #f3f4f6;
       --white: #ffffff;
       --today-ring: #e07b00;
+      /* Category colours */
+      --cat-sunday:   #3b82f6;
+      --cat-advanced: #dc2626;
+      --cat-monthly:  #16a34a;
+      --cat-girl:     #9333ea;
+      --cat-clinic:   #0891b2;
+      --cat-special:  #d97706;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -480,6 +487,31 @@
       .date-badge { display: flex; align-items: baseline; gap: 0.5rem; }
       .date-badge .db-day { font-size: 1.5rem; }
     }
+
+    /* ── Legend ── */
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem 1rem;
+      margin-top: 1.5rem;
+      padding: 1rem 1.25rem;
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      font-size: 0.8rem;
+      color: var(--text);
+    }
+    .legend-swatch {
+      width: 12px;
+      height: 12px;
+      border-radius: 3px;
+      flex-shrink: 0;
+    }
   </style>
 </head>
 <body>
@@ -540,6 +572,14 @@
     <div class="event-list" id="event-list"></div>
   </div>
 
+  <div class="legend">
+    <div class="legend-item"><div class="legend-swatch" style="background:var(--cat-sunday)"></div>Sunday Group Ride</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:var(--cat-advanced)"></div>Advanced Group Ride</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:var(--cat-monthly)"></div>Monthly Group Ride</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:var(--cat-girl)"></div>Ride Like A Girl</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:var(--cat-clinic)"></div>Skills Clinic</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:var(--cat-special)"></div>Special Event</div>
+  </div>
   <p class="footer-note" id="footer-note"></p>
 </div>
 
@@ -562,6 +602,22 @@
 
   const MONTHS   = ['January','February','March','April','May','June','July','August','September','October','November','December'];
   const DAYS_SH  = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+
+  const CATEGORIES = [
+    { match: /sunday/i,                             color: 'var(--cat-sunday)'   },
+    { match: /advanced/i,                           color: 'var(--cat-advanced)' },
+    { match: /monthly/i,                            color: 'var(--cat-monthly)'  },
+    { match: /girl/i,                               color: 'var(--cat-girl)'     },
+    { match: /fundamentals|clinic|level\s*\d/i,     color: 'var(--cat-clinic)'   },
+  ];
+  const CAT_SPECIAL = 'var(--cat-special)';
+
+  function categoryColor(title) {
+    for (const cat of CATEGORIES) {
+      if (cat.match.test(title)) return cat.color;
+    }
+    return CAT_SPECIAL;
+  }
 
   let allEvents   = [];
   let curYear, curMonth;
@@ -749,9 +805,10 @@
 
     events.slice(0, 3).forEach(ev => {
       const pill = document.createElement('div');
-      pill.className   = 'event-pill';
-      pill.textContent = ev.title;
-      pill.onclick     = e => { e.stopPropagation(); openModal(ev); };
+      pill.className        = 'event-pill';
+      pill.style.background = categoryColor(ev.title);
+      pill.textContent      = ev.title;
+      pill.onclick          = e => { e.stopPropagation(); openModal(ev); };
       cell.appendChild(pill);
     });
 
@@ -827,14 +884,16 @@
   }
 
   function makeCard(ev) {
-    const d    = ev._date;
-    const time = ev.time || fmtTime(d);
+    const d     = ev._date;
+    const time  = ev.time || fmtTime(d);
+    const color = categoryColor(ev.title);
 
     const card = document.createElement('div');
     card.className = 'event-card';
+    card.style.borderLeftColor = color;
     card.innerHTML = `
       <div class="date-badge">
-        <div class="db-month">${MONTHS[d.getMonth()].slice(0, 3)}</div>
+        <div class="db-month" style="color:${color}">${MONTHS[d.getMonth()].slice(0, 3)}</div>
         <div class="db-day">${d.getDate()}</div>
         <div class="db-wd">${DAYS_SH[d.getDay()]}</div>
       </div>
