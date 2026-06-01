@@ -1062,9 +1062,10 @@
   };
   document.getElementById('today-btn').onclick = () => {
     const now = new Date();
-    curYear   = now.getFullYear();
-    curMonth  = now.getMonth();
-    todayOnly = true;
+    curYear        = now.getFullYear();
+    curMonth       = now.getMonth();
+    todayOnly      = true;
+    activeCategory = null;
     setView('list');
   };
   document.getElementById('btn-calendar').onclick = () => setView('calendar');
