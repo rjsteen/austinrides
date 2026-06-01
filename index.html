@@ -1052,12 +1052,12 @@
   document.getElementById('prev-month').onclick = () => {
     const now = new Date();
     if (curYear === now.getFullYear() && curMonth <= now.getMonth()) return;
-    todayOnly = false; activeCategory = null;
+    todayOnly = false;
     if (curMonth === 0) { curMonth = 11; curYear--; } else curMonth--;
     render();
   };
   document.getElementById('next-month').onclick = () => {
-    todayOnly = false; activeCategory = null;
+    todayOnly = false;
     if (curMonth === 11) { curMonth = 0; curYear++; } else curMonth++;
     render();
   };
