@@ -914,7 +914,7 @@
     setView('list');
   };
   document.getElementById('btn-calendar').onclick = () => setView('calendar');
-  document.getElementById('btn-list').onclick     = () => setView('list');
+  document.getElementById('btn-list').onclick     = () => { todayOnly = false; setView('list'); };
   document.getElementById('modal-close').onclick  = closeModal;
   document.getElementById('modal').onclick = e => {
     if (e.target === e.currentTarget) closeModal();
