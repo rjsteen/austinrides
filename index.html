@@ -474,13 +474,19 @@
       .day-cell { min-height: 60px; padding: 0.25rem; }
       .event-pill { display: none; }
       .day-cell.has-events::after {
-        content: '';
+        content: attr(data-cat-initial);
         display: block;
-        width: 5px;
-        height: 5px;
+        width: 16px;
+        height: 16px;
         border-radius: 50%;
         background: var(--cell-color, var(--orange));
-        margin: 2px auto 0;
+        margin: 3px auto 0;
+        font-size: 0.6rem;
+        font-weight: 800;
+        color: #fff;
+        line-height: 16px;
+        text-align: center;
+        letter-spacing: 0;
       }
       .cal-header-day { font-size: 0.6rem; padding: 0.5rem 0.1rem; }
       .event-card { flex-direction: column; gap: 0.5rem; }
@@ -604,20 +610,23 @@
   const DAYS_SH  = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 
   const CATEGORIES = [
-    { match: /sunday/i,                             color: 'var(--cat-sunday)'   },
-    { match: /advanced/i,                           color: 'var(--cat-advanced)' },
-    { match: /monthly/i,                            color: 'var(--cat-monthly)'  },
-    { match: /girl/i,                               color: 'var(--cat-girl)'     },
-    { match: /fundamentals|clinic|level\s*\d/i,     color: 'var(--cat-clinic)'   },
+    { match: /sunday/i,                         color: 'var(--cat-sunday)',   initial: 'S' },
+    { match: /advanced/i,                       color: 'var(--cat-advanced)', initial: 'A' },
+    { match: /monthly/i,                        color: 'var(--cat-monthly)',  initial: 'M' },
+    { match: /girl/i,                           color: 'var(--cat-girl)',     initial: 'G' },
+    { match: /fundamentals|clinic|level\s*\d/i, color: 'var(--cat-clinic)',   initial: 'C' },
   ];
-  const CAT_SPECIAL = 'var(--cat-special)';
+  const CAT_SPECIAL = { color: 'var(--cat-special)', initial: 'E' };
 
-  function categoryColor(title) {
+  function getCategory(title) {
     for (const cat of CATEGORIES) {
-      if (cat.match.test(title)) return cat.color;
+      if (cat.match.test(title)) return cat;
     }
     return CAT_SPECIAL;
   }
+
+  function categoryColor(title)   { return getCategory(title).color; }
+  function categoryInitial(title) { return getCategory(title).initial; }
 
   let allEvents   = [];
   let curYear, curMonth;
@@ -821,6 +830,7 @@
 
     if (events.length) {
       cell.style.setProperty('--cell-color', categoryColor(events[0].title));
+      cell.dataset.catInitial = categoryInitial(events[0].title);
       cell.onclick = () => events.length === 1
         ? openModal(events[0])
         : openModal(events[0]); // show first; could show a picker in the future
