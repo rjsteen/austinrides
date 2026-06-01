@@ -494,9 +494,14 @@
       .date-badge .db-day { font-size: 1.5rem; }
     }
 
-    /* ── Legend ── */
+    /* ── Legend — hidden by default; small screens show it only in calendar view ── */
+    .legend { display: none; }
+
+    @media (max-width: 640px) {
+      .show-legend .legend { display: flex; }
+    }
+
     .legend {
-      display: flex;
       flex-wrap: wrap;
       gap: 0.5rem 1rem;
       margin-top: 1.5rem;
@@ -737,6 +742,7 @@
     prevBtn.style.cursor  = atMinMonth ? 'default' : '';
     document.getElementById('calendar-view').style.display = activeView === 'calendar' ? '' : 'none';
     document.getElementById('list-view').style.display     = activeView === 'list'     ? '' : 'none';
+    document.querySelector('.main').classList.toggle('show-legend', activeView === 'calendar');
     if (activeView === 'calendar') renderCalendar();
     else renderList();
   }
