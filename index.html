@@ -479,7 +479,7 @@
         width: 5px;
         height: 5px;
         border-radius: 50%;
-        background: var(--orange);
+        background: var(--cell-color, var(--orange));
         margin: 2px auto 0;
       }
       .cal-header-day { font-size: 0.6rem; padding: 0.5rem 0.1rem; }
@@ -820,6 +820,7 @@
     }
 
     if (events.length) {
+      cell.style.setProperty('--cell-color', categoryColor(events[0].title));
       cell.onclick = () => events.length === 1
         ? openModal(events[0])
         : openModal(events[0]); // show first; could show a picker in the future
