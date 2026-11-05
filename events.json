@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-06T01:11:51.799297+00:00",
+  "updated": "2026-11-05T14:52:01.371114+00:00",
   "source": "https://www.austinridgeriders.com/events",
   "events": [
     {
@@ -10,263 +10,11 @@
       "url": "https://www.austinridgeriders.com/events/cranksgiving"
     },
     {
-      "title": "Member Appreciation",
-      "start": "2026-05-30",
-      "time": "",
-      "location": "",
-      "url": ""
-    },
-    {
-      "title": "Advanced Group Ride",
-      "start": "2026-06-20",
-      "time": "",
-      "location": "Emma Long",
-      "url": "https://www.tickettailor.com/events/austinridgeriders/2000631"
-    },
-    {
-      "title": "Monthly Group Ride",
-      "start": "2026-06-27",
-      "time": "",
-      "location": "Spider Mountain",
-      "url": "https://www.tickettailor.com/events/austinridgeriders/2004754"
-    },
-    {
-      "title": "Ride Like A Girl",
-      "start": "2026-06-27",
-      "time": "",
-      "location": "Spider Mountain",
-      "url": "https://www.tickettailor.com/events/austinridgeriders/2004754"
-    },
-    {
-      "title": "Ride Like A Girl",
-      "start": "2026-06-29",
-      "time": "",
-      "location": "*Walnut Creek*",
-      "url": "https://www.tickettailor.com/events/austinridgeriders/2161209"
-    },
-    {
-      "title": "Ride Like A Girl",
-      "start": "2026-07-06",
-      "time": "",
-      "location": "Brushy Creek",
-      "url": "https://app.tickettailor.com/events/austinridgeriders/2162923"
-    },
-    {
-      "title": "Ride Like A Girl",
-      "start": "2026-07-13",
-      "time": "",
-      "location": "Emma Long",
-      "url": "https://app.tickettailor.com/events/austinridgeriders/2162992"
-    },
-    {
-      "title": "Advanced Group Ride",
-      "start": "2026-07-18",
-      "time": "",
-      "location": "Barton Creek",
-      "url": "https://www.tickettailor.com/events/austinridgeriders/2000633"
-    },
-    {
-      "title": "Ride Like A Girl",
-      "start": "2026-07-20",
-      "time": "",
-      "location": "Walnut Creek",
-      "url": "https://app.tickettailor.com/events/austinridgeriders/2163117"
-    },
-    {
-      "title": "Monthly Group Ride",
-      "start": "2026-07-25",
-      "time": "",
-      "location": "Forrest Creek",
-      "url": "https://www.tickettailor.com/events/austinridgeriders/2000635"
-    },
-    {
-      "title": "Ride Like A Girl",
-      "start": "2026-07-25",
-      "time": "",
-      "location": "Forrest Creek",
-      "url": "https://www.tickettailor.com/events/austinridgeriders/2000635"
-    },
-    {
-      "title": "Ride Like A Girl",
-      "start": "2026-07-27",
-      "time": "",
-      "location": "Walnut Creek",
-      "url": "https://app.tickettailor.com/events/austinridgeriders/2163104"
-    },
-    {
-      "title": "ARR Movie Night",
-      "start": "2026-07-29",
-      "time": "",
-      "location": "",
-      "url": ""
-    },
-    {
-      "title": "Ride Like A Girl",
-      "start": "2026-08-03",
-      "time": "",
-      "location": "Circle C",
-      "url": "https://app.tickettailor.com/events/austinridgeriders/2162990"
-    },
-    {
-      "title": "Ride Like A Girl",
-      "start": "2026-08-10",
-      "time": "",
-      "location": "Georgetown Trails",
-      "url": "https://app.tickettailor.com/events/austinridgeriders/2162999"
-    },
-    {
-      "title": "Advanced Group Ride",
-      "start": "2026-08-15",
-      "time": "",
-      "location": "Mount Lakeway",
-      "url": "https://www.tickettailor.com/events/austinridgeriders/2000627"
-    },
-    {
-      "title": "Ride Like A Girl",
-      "start": "2026-08-17",
-      "time": "",
-      "location": "Brushy Creek",
-      "url": "https://app.tickettailor.com/events/austinridgeriders/2162923"
-    },
-    {
-      "title": "Monthly Group Ride",
-      "start": "2026-08-22",
-      "time": "",
-      "location": "Pedernales Falls",
-      "url": "https://www.tickettailor.com/events/austinridgeriders/2004746"
-    },
-    {
-      "title": "Ride Like A Girl",
-      "start": "2026-08-23",
-      "time": "",
-      "location": "Circle C",
-      "url": "https://app.tickettailor.com/events/austinridgeriders/2163089"
-    },
-    {
-      "title": "Ride Like A Girl",
-      "start": "2026-08-24",
-      "time": "",
-      "location": "Walnut Creek",
-      "url": "https://app.tickettailor.com/events/austinridgeriders/2161209"
-    },
-    {
-      "title": "Ride Like A Girl",
-      "start": "2026-08-31",
-      "time": "",
-      "location": "Walnut Creek",
-      "url": "https://app.tickettailor.com/events/austinridgeriders/2163104"
-    },
-    {
-      "title": "Ride Like A Girl",
-      "start": "2026-09-06",
-      "time": "",
-      "location": "Muleshoe Bend",
-      "url": "https://app.tickettailor.com/events/austinridgeriders/2163019"
-    },
-    {
-      "title": "Level 1 Fundamentals",
-      "start": "2026-09-12",
-      "time": "",
-      "location": "Walnut Creek Metro Park",
-      "url": "https://www.bikereg.com/arr-l1-clinic"
-    },
-    {
-      "title": "Sunday Group Ride",
-      "start": "2026-09-13",
-      "time": "",
-      "location": "Walnut Creek",
-      "url": "https://www.tickettailor.com/events/austinridgeriders/1999648"
-    },
-    {
-      "title": "Ride Like A Girl",
-      "start": "2026-09-14",
-      "time": "",
-      "location": "Walnut Creek",
-      "url": "https://www.tickettailor.com/events/austinridgeriders/2393739"
-    },
-    {
-      "title": "Advanced Group Ride",
-      "start": "2026-09-19",
-      "time": "",
-      "location": "Emma Long",
-      "url": "https://www.tickettailor.com/events/austinridgeriders/2000631"
-    },
-    {
-      "title": "Sunday Group Ride",
-      "start": "2026-09-20",
-      "time": "",
-      "location": "Walnut Creek",
-      "url": "https://www.tickettailor.com/events/austinridgeriders/1999648"
-    },
-    {
-      "title": "Monthly Group Ride",
-      "start": "2026-09-26",
-      "time": "",
-      "location": "Muleshoe Bend",
-      "url": "https://www.tickettailor.com/events/austinridgeriders/2004736"
-    },
-    {
-      "title": "Sunday Group Ride",
-      "start": "2026-09-27",
-      "time": "",
-      "location": "Walnut Creek",
-      "url": "https://www.tickettailor.com/events/austinridgeriders/1999648"
-    },
-    {
-      "title": "Sunday Group Ride",
-      "start": "2026-10-04",
-      "time": "",
-      "location": "GTX Trails",
-      "url": "https://www.tickettailor.com/events/austinridgeriders/2001598"
-    },
-    {
-      "title": "Sunday Group Ride",
-      "start": "2026-10-11",
-      "time": "",
-      "location": "Brushy Creek",
-      "url": "https://www.tickettailor.com/events/austinridgeriders/1999895"
-    },
-    {
-      "title": "Advanced Group Ride",
-      "start": "2026-10-17",
-      "time": "",
-      "location": "Barton Creek",
-      "url": "https://www.tickettailor.com/events/austinridgeriders/2000633"
-    },
-    {
-      "title": "Sunday Group Ride",
-      "start": "2026-10-18",
-      "time": "",
-      "location": "Brushy Creek",
-      "url": "https://www.tickettailor.com/events/austinridgeriders/1999895"
-    },
-    {
-      "title": "Monthly Group Ride",
-      "start": "2026-10-24",
-      "time": "",
-      "location": "Reveille Peak",
-      "url": "https://app.tickettailor.com/events/austinridgeriders/2037889"
-    },
-    {
-      "title": "Sunday Group Ride",
-      "start": "2026-10-25",
-      "time": "",
-      "location": "Brushy Creek",
-      "url": "https://www.tickettailor.com/events/austinridgeriders/1999895"
-    },
-    {
-      "title": "Sunday Group Ride",
-      "start": "2026-11-01",
-      "time": "",
-      "location": "South Walnut",
-      "url": "https://app.tickettailor.com/events/austinridgeriders/2001627"
-    },
-    {
       "title": "Sunday Group Ride",
       "start": "2026-11-08",
       "time": "",
-      "location": "GTX Trails",
-      "url": "https://www.tickettailor.com/events/austinridgeriders/2000645"
+      "location": "Walnut Creek",
+      "url": "https://www.tickettailor.com/events/austinridgeriders/1999648"
     },
     {
       "title": "Sunday Group Ride",
@@ -288,6 +36,13 @@
       "time": "",
       "location": "GTX Trails",
       "url": "https://www.tickettailor.com/events/austinridgeriders/2000645"
+    },
+    {
+      "title": "Monthly Group Ride",
+      "start": "2026-11-28",
+      "time": "",
+      "location": "Cranksgiving",
+      "url": "https://www.bikereg.com/arrcranksgiving"
     },
     {
       "title": "Cranksgiving",
